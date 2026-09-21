@@ -121,15 +121,20 @@ risk_score += np.random.normal(
     3,
     NUM_SUPPLIERS
 )
+
+low_threshold = np.percentile(risk_score, 33)
+high_threshold = np.percentile(risk_score, 66)
+
 risk_label = np.where(
-    risk_score < 35,
+    risk_score <= low_threshold,
     "Low",
     np.where(
-        risk_score < 55,
+        risk_score <= high_threshold,
         "Medium",
         "High"
     )
 )
+
 data = pd.DataFrame({
     "Supplier_ID": supplier_ids,
     "Years_In_Business": years_in_business,
