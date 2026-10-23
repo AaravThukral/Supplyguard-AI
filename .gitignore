@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# SupplyGuard generated artifacts
+models/
+research/model_results/metrics.json
+research/model_results/model_comparison.md

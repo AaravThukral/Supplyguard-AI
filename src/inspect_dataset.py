@@ -1,22 +1,24 @@
+"""Print structural and quality checks for the synthetic supplier dataset."""
+from pathlib import Path
 import pandas as pd
 
-# Load the dataset
-data = pd.read_csv("data/suppliers.csv")
 
-print("Dataset Shape:")
-print(data.shape)
+def main() -> None:
+    path = Path(__file__).resolve().parents[1] / "data" / "suppliers.csv"
+    data = pd.read_csv(path)
+    print(f"Dataset: {path}")
+    print(f"Shape: {data.shape}")
+    print(f"Duplicate rows: {data.duplicated().sum()}")
+    print(f"Missing values: {int(data.isna().sum().sum())}")
+    print("\nColumn names:")
+    print(data.columns.tolist())
+    print("\nData types:")
+    print(data.dtypes)
+    print("\nRisk distribution:")
+    print(data["Risk_Label"].value_counts().sort_index())
+    print("\nNumeric summary:")
+    print(data.describe().transpose())
 
-print("\nColumn Names:")
-print(data.columns.tolist())
 
-print("\nMissing Values:")
-print(data.isnull().sum())
-
-print("\nData Types:")
-print(data.dtypes)
-
-print("\nBasic Statistics:")
-print(data.describe())
-
-print("\nRisk Distribution:")
-print(data["Risk_Label"].value_counts())
+if __name__ == "__main__":
+    main()

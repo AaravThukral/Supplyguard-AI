@@ -1,5 +1,7 @@
 # Logistic Regression — Model Training Results
 
+> Historical record: this report is preserved from the original experiment. The current implementation uses a `Pipeline` and `ColumnTransformer` so preprocessing is fitted only on the training split; regenerate `model_comparison.md` for current results.
+
 ## 1. Model Overview
 
 Logistic Regression was used as the first baseline classification model for the SupplyGuard AI project.
