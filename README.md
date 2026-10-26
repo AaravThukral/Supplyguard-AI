@@ -1,46 +1,22 @@
-# SupplyGuard AI
 
-SupplyGuard AI is an AI-based supplier risk assessment and procurement decision-support system. It classifies suppliers as **Low**, **Medium**, or **High** risk using a reproducible scikit-learn pipeline and provides model-associated factors plus transparent procurement guidance.
+## Enterprise interface
 
-## Important scientific limitation
+The Streamlit app now uses a dark navy, emerald, amber, and coral visual system with seven workspace sections:
 
-The included 1,000-row dataset is synthetic. `Risk_Label` is generated from a project-defined risk score with noise and percentile thresholds. The reported metrics therefore measure performance on this constructed benchmark; they do **not** establish effectiveness or accuracy on real supplier outcomes. Model explanations describe associations, not causes, and predicted probabilities are not guaranteed calibrated confidence values.
+| Section | Purpose |
+|---|---|
+| Overview | KPI cards, predicted and synthetic-label distributions, model snapshot, and suppliers deserving attention. |
+| Suppliers | Searchable and filterable supplier directory with CSV export. |
+| Assessments | Existing-supplier or manual-profile assessments with probabilities, model-associated factors, alerts, guidance, and PDF export. |
+| Supplier Comparison | Two- or three-supplier trade-off matrix covering risk, delivery, quality, financial, logistics, and disruption metrics. |
+| Risk Intelligence | Transparent threshold alerts and an exportable review-priority list. |
+| Reports | Individual PDF assessment and full prediction CSV downloads. |
+| Model Lab | Actual saved model metrics, confusion matrices, classification reports, and global feature associations. |
 
-## Quick start
+The interface always distinguishes `Risk_Label` (the synthetic dataset label) from `Predicted_Risk` (the saved model output). Rule-based alerts are implemented separately in `src/reporting.py` and are not represented as machine-learning predictions. The local watchlist and alert view are based on the current dataset snapshot; the app does not claim to monitor live suppliers over time.
 
-From the repository root:
+### Demonstration flow
 
-```bash
-python -m venv .venv
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m src.inspect_dataset
-python -m src.train_model
-streamlit run app.py
-```
+After training the model, launch `streamlit run app.py`. Start in Overview to show the population KPIs, open Suppliers to filter high-risk records, use Supplier Comparison to discuss trade-offs, then assess one supplier and download its PDF report. Finish in Model Lab to show the actual evaluation artifacts and the synthetic-data warning. For a clean demonstration, use the existing-supplier assessment mode so the inputs are traceable to `data/suppliers.csv`.
 
-The trainer writes `models/supplyguard_model.joblib`, `research/model_results/model_comparison.md`, and `research/model_results/metrics.json`. The model artifact is intentionally generated locally rather than committed to source control.
-
-## Project structure
-
-- `data/suppliers.csv` — local synthetic benchmark.
-- `src/generate_dataset.py` — deterministic data generator (`SEED = 42`).
-- `src/supplyguard_ml.py` — reusable preprocessing, model, evaluation, explanation, and recommendation utilities.
-- `src/train_model.py` — trains and compares Logistic Regression, Decision Tree, and Random Forest using the same stratified split.
-- `app.py` — Streamlit dashboard with individual assessment, batch CSV assessment, model information, and limitations.
-- `tests/` — automated regression tests.
-- `research/model_results/` — historical baseline and generated experiment reports.
-- `docs/` — dataset, problem, architecture, roadmap, and research documentation.
-
-## Reproducibility and leakage controls
-
-The target and `Supplier_ID` are excluded from predictors. Numeric scaling and categorical one-hot encoding are fitted inside a `ColumnTransformer` within a scikit-learn `Pipeline`, after the stratified train/test split. Unknown categories are ignored at inference time. The same random state is used for generation and evaluation.
-
-## Testing
-
-```bash
-pytest -q
-```
-
-The original Logistic Regression report in `research/model_results/logistic_regression.md` is preserved as a historical record. The current comparison report is generated from actual execution of the current pipeline and should be regenerated after changing dependencies or data.
+PDF generation uses ReportLab and is included in `requirements.txt`. If the optional dependency is unavailable, the Reports page shows an actionable error while CSV exports remain available.
